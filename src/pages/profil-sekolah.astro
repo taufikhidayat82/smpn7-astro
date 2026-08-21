@@ -1,0 +1,589 @@
+---
+// src/pages/profil-sekolah.astro
+import { getCollection } from 'astro:content';
+
+// Data Profil Sekolah diambil secara akurat dari file profil-sekolah.xlsx
+const identitasSekolah = {
+  nama: 'SMP NEGERI 07 SATAP NANGA MAHAP',
+  npsn: '30109762',
+  jenjang: 'SMP',
+  status: 'Negeri',
+  alamat: 'Dusun Tembesuk, RT 01 / RW 01',
+  kelurahan: 'Tembesuk',
+  kecamatan: 'Kec. Nanga Mahap',
+  kabupaten: 'Kab. Sekadau',
+  provinsi: 'Prov. Kalimantan Barat',
+  kodePos: '78585',
+  negara: 'Indonesia',
+  koordinat: 'Lintang: -0.4825 | Bujur: 110.7941',
+};
+
+const dokumenPerizinan = {
+  skPendirian: '127 tahun 2010',
+  tglSkPendirian: '06 Mei 2010',
+  skIzinOperasional: '127 Tahun 2010',
+  tglSkIzinOperasional: '06 Mei 2010',
+  statusKepemilikan: 'Pemerintah Daerah',
+  mbs: 'Ya (Manajemen Berbasis Sekolah)',
+  npwp: '712110295705000',
+  namaWajibPajak: 'SMP NEGERI 07 SATAP NANGA MAHAP',
+  bank: 'BPD KALIMANTAN BARAT (Cabang Sekadau)',
+  rekeningBOS: '9525030129',
+  atasNama: 'BOSSMPN07NANGAMAHAP',
+};
+
+const dataPeriodik = {
+  waktuPenyelenggaraan: 'Pagi / 6 Hari',
+  sumberListrik: 'PLN',
+  dayaListrik: '900 Watt',
+  aksesInternet: 'Telkomsel',
+  menerimaBOS: 'Ya',
+  sertifikasiISO: '9001:2000',
+  website: 'http://smpn07satapnangamahap.com',
+};
+
+const dataSanitasiUKS = [
+  { label: 'Sumber Air bersih', value: 'Ledeng / PAM' },
+  { label: 'Kecukupan Air Bersih', value: 'Cukup Sepanjang Waktu' },
+  { label: 'Tipe Jamban', value: 'Leher Angsa (Toilet Duduk / Jongkok)' },
+  { label: 'Saluran Pembuangan Limbah', value: 'Tangki Septik / IPAL' },
+  { label: 'Tempat Sampah Per Kelas & Jamban', value: 'Tersedia Lengkap (Tertutup)' },
+  { label: 'Tempat Pembuangan Sementara (TPS)', value: 'Tersedia & Diangkut Rutin' },
+  { label: 'Selokan Genangan Air', value: 'Tersedia (Bebas Genangan)' },
+  { label: 'Kemitraan Sanitasi', value: 'Pemerintah Daerah & Puskesmas' },
+];
+
+// Ambil berita dari Content Collection & urutkan dari yang paling baru
+const rawAllBerita = (await getCollection('berita')) || [];
+const beritaTerbaru = rawAllBerita
+  .sort((a, b) => {
+    const timeA = a.data?.pubDate ? new Date(a.data.pubDate).getTime() : 0;
+    const timeB = b.data?.pubDate ? new Date(b.data.pubDate).getTime() : 0;
+
+    const validA = Number.isNaN(timeA) ? 0 : timeA;
+    const validB = Number.isNaN(timeB) ? 0 : timeB;
+
+    return validB - validA; // Tanggal terbaru muncul lebih dahulu
+  })
+  .slice(0, 3);
+
+const getCategoryBadge = (category: string) => {
+  switch (category?.toUpperCase()) {
+    case 'PRESTASI': return 'bg-blue-600 text-white';
+    case 'FASILITAS': return 'bg-emerald-600 text-white';
+    case 'PPDB': return 'bg-amber-500 text-slate-900';
+    case 'KEGIATAN': return 'bg-purple-600 text-white';
+    case 'EKSTRAKURIKULER': return 'bg-red-600 text-white';
+    default: return 'bg-indigo-600 text-white';
+  }
+};
+---
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Sekolah - SMPN 07 Satap Nanga Mahap</title>
+    <!-- Tailwind CSS CDN -->
+    <script is:inline src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        .nav-royal-btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 1rem 0.85rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.875rem;
+        }
+
+        .nav-royal-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0%;
+            height: 3px;
+            background-color: #fbbf24;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(-50%);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .nav-royal-btn:hover { color: #fbbf24; }
+        .nav-royal-btn:hover::after { width: 80%; }
+        .nav-royal-btn.active { color: #fbbf24; font-weight: 700; }
+        .nav-royal-btn.active::after { width: 85%; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+
+    <!-- 0. PRELOADER OVERLAY -->
+    <div id="loading-screen" class="fixed inset-0 z-50 bg-[#0a1128] flex flex-col items-center justify-center transition-opacity duration-500">
+        <div class="relative flex items-center justify-center mb-4">
+            <div class="w-20 h-20 border-4 border-amber-400/20 border-t-amber-400 rounded-full animate-spin"></div>
+            <img src="/images/logosmp7.png" alt="Logo SMPN 07 Satap Nanga Mahap" class="w-10 h-10 object-contain absolute" />
+        </div>
+        <p class="text-xs font-bold text-amber-400 tracking-widest uppercase animate-pulse">Memuat Profil Sekolah...</p>
+    </div>
+
+    <!-- 1. HEADER & NAVIGASI -->
+    <header class="w-full shadow-lg">
+        <div class="bg-[#0a1128] text-slate-300 text-xs py-2 px-4 md:px-8 flex flex-col md:flex-row justify-between items-center border-b border-amber-500/30 gap-1 md:gap-0">
+            <span class="font-semibold tracking-wide text-center md:text-left text-[11px] md:text-xs text-slate-200">
+                SEKOLAH MENENGAH PERTAMA NEGERI 07 SATAP NANGA MAHAP
+            </span>
+            <span class="text-amber-400 font-bold tracking-wider text-[11px] md:text-xs">
+                NPSN: 30109762 &nbsp;|&nbsp; AKREDITASI C
+            </span>
+        </div>
+
+        <div class="bg-[url('/images/latar-header.webp')] bg-cover bg-center py-5 px-4 border-b border-amber-500/20 relative">
+            <div class="max-w-7xl mx-auto flex items-center justify-center relative z-10">
+                <div class="hidden md:block flex-1 h-[1.5px] bg-gradient-to-r from-transparent via-amber-500 to-amber-600"></div>
+                <div class="flex flex-col items-center px-4 md:px-12 text-center">
+                    <a href="/" class="w-16 h-16 md:w-20 md:h-20 mb-2.5 flex items-center justify-center transition-transform duration-300 hover:scale-105">
+                        <img src="/images/logosmp7.png" alt="Logo SMPN 07 Satap Nanga Mahap" class="w-full h-full object-contain filter drop-shadow-sm" />
+                    </a>
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-[#0a1128] tracking-tight leading-tight">
+                        SMPN 07 SATAP NANGA MAHAP
+                    </h1>
+                    <p class="text-xs md:text-sm font-bold text-amber-800 tracking-[0.2em] md:tracking-[0.25em] uppercase mt-1">
+                        CERDAS &bull; BERKARAKTER &bull; BERUTAMA
+                    </p>
+                </div>
+                <div class="hidden md:block flex-1 h-[1.5px] bg-gradient-to-l from-transparent via-amber-500 to-amber-600"></div>
+            </div>
+        </div>
+
+        <nav class="bg-[#0a1128]">
+            <div class="max-w-7xl mx-auto px-4 md:px-8 flex flex-col md:flex-row items-center justify-between">
+                <ul class="flex flex-wrap items-center justify-center gap-1 md:gap-4 py-1 md:py-0">
+                    <li>
+                        <a href="/" class="nav-royal-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                <polyline points="9 22 9 12 15 12 15 22"/>
+                            </svg>
+                            <span>Beranda</span>
+                        </a>
+                    </li>
+                    <li><a href="/profil-sekolah" class="nav-royal-btn active">Profil Sekolah</a></li>
+                    <li><a href="/#sejarah" class="nav-royal-btn">Sejarah Sekolah</a></li>
+                    <li><a href="/#visi-misi" class="nav-royal-btn">Visi & Misi</a></li>
+                    <li><a href="/jadwal-belajar" class="nav-royal-btn">Jadwal Belajar</a></li>
+                    <li><a href="/#guru" class="nav-royal-btn">Profil Guru</a></li>
+                </ul>
+                <div class="pb-3 md:pb-0 py-2">
+                    <a href="#kontak" class="inline-flex items-center gap-2 border-2 border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-[#0a1128] px-4 py-1.5 rounded text-xs font-extrabold tracking-wider transition-all duration-300 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                        <span>KONTAK KAMI</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- 2. KONTEN UTAMA PROFIL SEKOLAH -->
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-10 md:py-14">
+        <a href="/" class="inline-flex items-center gap-2 text-amber-600 font-bold hover:text-amber-700 hover:underline mb-6 text-sm transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Kembali ke Beranda
+        </a>
+
+        <!-- Halaman Utama Wadah Informasi Profil Sekolah -->
+        <article class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-10 mb-8">
+            
+            <div class="text-center md:text-left mb-6">
+                <span class="inline-block text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider bg-amber-500 text-slate-900 mb-3">
+                    PROFIL RESMI SEKOLAH
+                </span>
+
+                <!-- JUDUL & SUB-JUDUL -->
+                <h1 class="text-2xl md:text-4xl font-extrabold text-slate-900 leading-tight">
+                    Profil SMP Negeri 07 Satap Nanga Mahap
+                </h1>
+
+                <p class="text-amber-800 text-sm md:text-base font-bold mt-2">
+                    Informasi Berdasarkan Data Semester Ganjil Tahun Pelajaran 2026/2027
+                </p>
+
+                <p class="text-slate-500 text-xs font-medium mt-3 pb-4 border-b border-slate-100 flex items-center gap-2 justify-center md:justify-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    Terintegrasi Dapodik &bull; Pembaruan Resmi TP 2026/2027
+                </p>
+            </div>
+
+            <!-- SPESIFIKASI GAMBAR UTAMA DARI URL PINTEREST -->
+            <div class="relative w-full h-64 md:h-96 rounded-2xl overflow-hidden shadow-lg mb-8 group border border-slate-200">
+                <img 
+                    src="https://i.pinimg.com/1200x/ae/81/00/ae81004d460bd97a01a9c97b50a90aa7.jpg" 
+                    alt="Laman Gedung SMP Negeri 07 Satap Nanga Mahap" 
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-900/20 to-transparent"></div>
+                <div class="absolute bottom-4 left-4 right-4 md:left-6 md:bottom-6 text-white">
+                    <span class="bg-amber-400 text-slate-950 text-[10px] md:text-xs font-extrabold px-2.5 py-1 rounded uppercase tracking-wider mb-1 inline-block">
+                        Gedung & Lingkungan
+                    </span>
+                    <h3 class="text-base md:text-xl font-bold">SMP Negeri 07 Satap Nanga Mahap</h3>
+                    <p class="text-xs text-slate-200 hidden sm:block">Dusun Tembesuk, Desa Tembesuk, Kec. Nanga Mahap, Kab. Sekadau</p>
+                </div>
+            </div>
+
+            <!-- KALIMAT REDAKSI MENARIK SEBELUM INFORMASI PROFIL -->
+            <div class="bg-gradient-to-r from-amber-50 via-amber-100/50 to-slate-50 border-l-4 border-amber-500 p-5 md:p-6 rounded-r-2xl mb-10 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Komitmen Pendidikan Berkualitas di Jantung Sekadau
+                </h3>
+                <p class="text-slate-700 text-sm md:text-base leading-relaxed">
+                    Selamat datang di portal profil resmi **SMP Negeri 07 Satap Nanga Mahap**. Sebagai institusi pendidikan terdepan di wilayah Dusun Tembesuk, kami berkomitmen untuk mewujudkan lingkungan belajar yang unggul, inklusif, dan berkarakter mulia. Berlandaskan keterbukaan informasi dan tata kelola berbasis transparansi (MBS), seluruh data entitas, perizinan resmi, hingga kesiapan fasilitas pendukung terintegrasi secara valid demi mendukung pertumbuhan generasi emas bangsa.
+                </p>
+            </div>
+
+            <!-- KONTEN DATA PROFIL SEKOLAH -->
+            <div class="space-y-8">
+                
+                <!-- 1. IDENTITAS UTAMA SEKOLAH -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="bg-[#0a1128] px-6 py-4 border-b border-amber-500/30 flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-amber-400/20 text-amber-400 flex items-center justify-center shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                        </div>
+                        <h2 class="text-lg font-extrabold text-amber-400">1. Identitas Utama Sekolah</h2>
+                    </div>
+
+                    <div class="p-6 grid md:grid-cols-2 gap-4 text-sm">
+                        <div class="flex flex-col p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <span class="text-xs font-semibold text-slate-500">Nama Sekolah</span>
+                            <span class="font-extrabold text-slate-900 text-base">{identitasSekolah.nama}</span>
+                        </div>
+                        <div class="flex flex-col p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <span class="text-xs font-semibold text-slate-500">NPSN / Akreditasi</span>
+                            <span class="font-bold text-slate-900 text-base">{identitasSekolah.npsn} (Akreditasi C)</span>
+                        </div>
+                        <div class="flex flex-col p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <span class="text-xs font-semibold text-slate-500">Jenjang & Status</span>
+                            <span class="font-bold text-slate-900">{identitasSekolah.jenjang} &bull; Status {identitasSekolah.status}</span>
+                        </div>
+                        <div class="flex flex-col p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <span class="text-xs font-semibold text-slate-500">Alamat Lengkap</span>
+                            <span class="font-bold text-slate-900">{identitasSekolah.alamat}, Kel. {identitasSekolah.kelurahan}</span>
+                        </div>
+                        <div class="flex flex-col p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <span class="text-xs font-semibold text-slate-500">Kecamatan & Kabupaten</span>
+                            <span class="font-bold text-slate-900">{identitasSekolah.kecamatan}, {identitasSekolah.kabupaten}</span>
+                        </div>
+                        <div class="flex flex-col p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <span class="text-xs font-semibold text-slate-500">Provinsi & Kode Pos</span>
+                            <span class="font-bold text-slate-900">{identitasSekolah.provinsi} (Kode Pos: {identitasSekolah.kodePos})</span>
+                        </div>
+                        <div class="md:col-span-2 flex flex-col p-3 bg-amber-50/60 rounded-xl border border-amber-200">
+                            <span class="text-xs font-semibold text-amber-800">Posisi Geografis (Titik Koordinat)</span>
+                            <span class="font-bold text-slate-900 font-mono text-xs">{identitasSekolah.koordinat}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. DATA DOKUMEN, PERIZINAN & KEUANGAN -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="bg-[#0a1128] px-6 py-4 border-b border-amber-500/30 flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-amber-400/20 text-amber-400 flex items-center justify-center shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                        </div>
+                        <h2 class="text-lg font-extrabold text-amber-400">2. Dokumen Legalitas & Keuangan Sekolah</h2>
+                    </div>
+
+                    <div class="p-6 grid md:grid-cols-2 gap-4 text-sm">
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <span class="text-xs font-semibold text-slate-500 block">SK Pendirian Sekolah</span>
+                            <span class="font-bold text-slate-900">{dokumenPerizinan.skPendirian}</span>
+                            <span class="text-xs text-slate-500 block mt-0.5">Tanggal: {dokumenPerizinan.tglSkPendirian}</span>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <span class="text-xs font-semibold text-slate-500 block">SK Izin Operasional</span>
+                            <span class="font-bold text-slate-900">{dokumenPerizinan.skIzinOperasional}</span>
+                            <span class="text-xs text-slate-500 block mt-0.5">Tanggal: {dokumenPerizinan.tglSkIzinOperasional}</span>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <span class="text-xs font-semibold text-slate-500 block">Status Kepemilikan & MBS</span>
+                            <span class="font-bold text-slate-900">{dokumenPerizinan.statusKepemilikan}</span>
+                            <span class="text-xs text-emerald-700 font-semibold block mt-0.5">{dokumenPerizinan.mbs}</span>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <span class="text-xs font-semibold text-slate-500 block">NPWP Sekolah</span>
+                            <span class="font-mono font-bold text-slate-900">{dokumenPerizinan.npwp}</span>
+                            <span class="text-xs text-slate-500 block mt-0.5">{dokumenPerizinan.namaWajibPajak}</span>
+                        </div>
+                        <div class="md:col-span-2 p-4 bg-slate-100 rounded-xl border border-slate-200">
+                            <span class="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-1">Rekening Operasional BOS Sekolah</span>
+                            <div class="grid sm:grid-cols-3 gap-2 text-xs">
+                                <div><strong class="text-slate-500">Bank:</strong> <p class="font-semibold text-slate-800">{dokumenPerizinan.bank}</p></div>
+                                <div><strong class="text-slate-500">No. Rekening:</strong> <p class="font-mono font-bold text-indigo-700">{dokumenPerizinan.rekeningBOS}</p></div>
+                                <div><strong class="text-slate-500">Atas Nama:</strong> <p class="font-semibold text-slate-800">{dokumenPerizinan.atasNama}</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. DATA PERIODIK & SANITASI / UKS -->
+                <div class="grid md:grid-cols-2 gap-8">
+                    
+                    <!-- DATA PERIODIK -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
+                        <div>
+                            <div class="bg-[#0a1128] px-6 py-4 border-b border-amber-500/30 flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-amber-400/20 text-amber-400 flex items-center justify-center shrink-0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                </div>
+                                <h2 class="text-base font-extrabold text-amber-400">3. Data Periodik & Layanan</h2>
+                            </div>
+                            <div class="p-5 space-y-3 text-xs">
+                                <div class="flex justify-between py-2 border-b border-slate-100">
+                                    <span class="text-slate-500 font-medium">Waktu Penyelenggaraan</span>
+                                    <span class="font-bold text-slate-900">{dataPeriodik.waktuPenyelenggaraan}</span>
+                                </div>
+                                <div class="flex justify-between py-2 border-b border-slate-100">
+                                    <span class="text-slate-500 font-medium">Sumber & Daya Listrik</span>
+                                    <span class="font-bold text-slate-900">{dataPeriodik.sumberListrik} ({dataPeriodik.dayaListrik})</span>
+                                </div>
+                                <div class="flex justify-between py-2 border-b border-slate-100">
+                                    <span class="text-slate-500 font-medium">Akses Internet Utama</span>
+                                    <span class="font-bold text-slate-900">{dataPeriodik.aksesInternet}</span>
+                                </div>
+                                <div class="flex justify-between py-2 border-b border-slate-100">
+                                    <span class="text-slate-500 font-medium">Menerima Dana BOS</span>
+                                    <span class="font-extrabold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">{dataPeriodik.menerimaBOS}</span>
+                                </div>
+                                <div class="flex justify-between py-2 border-b border-slate-100">
+                                    <span class="text-slate-500 font-medium">Sertifikasi Standar</span>
+                                    <span class="font-bold text-slate-900">ISO {dataPeriodik.sertifikasiISO}</span>
+                                </div>
+                                <div class="flex justify-between py-2">
+                                    <span class="text-slate-500 font-medium">Website Resmi</span>
+                                    <a href={dataPeriodik.website} target="_blank" class="font-bold text-amber-600 hover:underline break-all">{dataPeriodik.website}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SANITASI & LINGKUNGAN (SDG / UKS) -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div class="bg-[#0a1128] px-6 py-4 border-b border-amber-500/30 flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-amber-400/20 text-amber-400 flex items-center justify-center shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            </div>
+                            <h2 class="text-base font-extrabold text-amber-400">4. Sanitasi & Lingkungan Sekolah</h2>
+                        </div>
+                        <div class="p-5 space-y-2.5 text-xs">
+                            {dataSanitasiUKS.map((item) => (
+                                <div class="flex justify-between items-center py-1.5 border-b border-slate-100 last:border-0">
+                                    <span class="text-slate-600 font-medium">{item.label}</span>
+                                    <span class="font-bold text-slate-900 text-right">{item.value}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 5. SEKSI BERITA & PENGUMUMAN TERBARU (DISAMAKAN DENGAN [ID].ASTRO) -->
+                {beritaTerbaru.length > 0 && (
+                    <section class="pt-8 border-t border-slate-200">
+                        <h2 class="text-2xl font-bold mb-8 text-slate-900 border-l-4 border-[#0a1128] pl-3">
+                            BERITA & PENGUMUMAN TERBARU
+                        </h2>
+
+                        <div class="grid md:grid-cols-3 gap-6">
+                            {beritaTerbaru.map((news) => (
+                                <a href={`/berita/${news.slug ?? news.id}`} class="block bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition hover:-translate-y-1 group">
+                                    {news.data.image && (
+                                        <img src={news.data.image} alt={news.data.title} class="w-full h-48 object-cover" />
+                                    )}
+                                    <div class="p-5">
+                                        <span class={`text-xs font-bold px-2.5 py-1 rounded ${getCategoryBadge(news.data.category)}`}>
+                                            {news.data.category}
+                                        </span>
+                                        <h3 class="font-bold text-lg mt-2 mb-2 line-clamp-2 text-slate-900 group-hover:text-amber-600 transition-colors">
+                                            {news.data.title}
+                                        </h3>
+                                        <p class="text-slate-600 text-sm line-clamp-3">
+                                            {news.data.summary}
+                                        </p>
+                                    </div>
+                                </a>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
+            </div>
+        </article>
+    </main>
+
+    <!-- 3. SEKSI KONTAK KAMI -->
+    <section id="kontak" class="relative bg-[#0a1128] text-white py-16 md:py-20 px-4 md:px-8 border-t border-amber-500/20 overflow-hidden">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fbbf24_1px,transparent_1px)] [background-size:20px_20px]"></div>
+
+        <div class="relative max-w-7xl mx-auto z-10">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="inline-block bg-amber-400/20 text-amber-400 text-xs font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider mb-3 border border-amber-400/30">
+                    HUBUNGI KAMI
+                </span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+                    Layanan & Informasi Kontak
+                </h2>
+                <p class="text-slate-400 text-sm md:text-base mt-2">
+                    Kami siap melayani pertanyaan, informasi pendaftaran, dan hubungan kemitraan sekolah.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-12 gap-8 items-start">
+                
+                <div class="lg:col-span-5 bg-slate-900/80 backdrop-blur-md p-6 md:p-8 rounded-2xl border border-amber-500/20 shadow-xl flex flex-col justify-between h-full">
+                    <div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-12 h-12 rounded-xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-400 shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-white">Alamat Resmi Sekolah</h3>
+                                <p class="text-xs text-amber-400 font-semibold uppercase tracking-wider">SMPN 07 Satap Nanga Mahap</p>
+                            </div>
+                        </div>
+
+                        <p class="text-slate-300 text-sm leading-relaxed mb-6 pl-2 border-l-2 border-amber-400">
+                            Dusun Tembesuk, RT 01 / RW 01, Desa Tembesuk, Kecamatan Nanga Mahap, Kabupaten Sekadau, Provinsi Kalimantan Barat.<br>
+                            <span class="font-bold text-white mt-1 inline-block">Kode Pos : 78585</span>
+                        </p>
+                    </div>
+
+                    <div class="bg-[#0a1128]/90 p-4 rounded-xl border border-slate-800 mt-4">
+                        <div class="flex items-center gap-3 text-xs text-slate-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            <div>
+                                <p class="font-bold text-white">Jam Operasional Kantor:</p>
+                                <p>Senin - Sabtu: 07.00 - 13.00 WIB</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 grid sm:grid-cols-2 gap-4">
+                    <a href="https://wa.me/6281347636738" target="_blank" rel="noopener noreferrer" class="group bg-slate-900/60 hover:bg-emerald-950/40 p-6 rounded-2xl border border-slate-800 hover:border-emerald-500/50 transition-all duration-300 hover:-translate-y-1 shadow-lg flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                                </div>
+                                <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full">Chat WA</span>
+                            </div>
+                            <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">WhatsApp Hotline</h4>
+                            <p class="text-base font-bold text-white mt-1 group-hover:text-emerald-400 transition-colors">+62 813-4763-6738</p>
+                        </div>
+                    </a>
+
+                    <a href="mailto:smpn07satapnangamahap@gmail.com" class="group bg-slate-900/60 hover:bg-blue-950/40 p-6 rounded-2xl border border-slate-800 hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1 shadow-lg flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                </div>
+                                <span class="text-xs font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full">Email Resmi</span>
+                            </div>
+                            <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Email Surat</h4>
+                            <p class="text-xs font-bold text-white mt-1 break-all group-hover:text-blue-400 transition-colors">smpn07satapnangamahap@gmail.com</p>
+                        </div>
+                    </a>
+
+                    <a href="https://instagram.com/smpn07_satap_nanga_mahap" target="_blank" rel="noopener noreferrer" class="group bg-slate-900/60 hover:bg-pink-950/40 p-6 rounded-2xl border border-slate-800 hover:border-pink-500/50 transition-all duration-300 hover:-translate-y-1 shadow-lg flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-pink-500/10 text-pink-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                                </div>
+                                <span class="text-xs font-bold text-pink-400 bg-pink-500/10 px-2.5 py-1 rounded-full">Instagram</span>
+                            </div>
+                            <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Sosial Media</h4>
+                            <p class="text-sm font-bold text-white mt-1 group-hover:text-pink-400 transition-colors">@smpn07_satap_nanga_mahap</p>
+                        </div>
+                    </a>
+
+                    <a href="https://facebook.com/smpn07_satap_nanga_mahap" target="_blank" rel="noopener noreferrer" class="group bg-slate-900/60 hover:bg-sky-950/40 p-6 rounded-2xl border border-slate-800 hover:border-sky-500/50 transition-all duration-300 hover:-translate-y-1 shadow-lg flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                                </div>
+                                <span class="text-xs font-bold text-sky-400 bg-sky-500/10 px-2.5 py-1 rounded-full">Facebook</span>
+                            </div>
+                            <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Halaman Facebook</h4>
+                            <p class="text-sm font-bold text-white mt-1 group-hover:text-sky-400 transition-colors">@smpn07_satap_nanga_mahap</p>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. SEKSI DUKUNGAN -->
+    <section class="bg-[#070c1e] text-white py-12 px-4 md:px-8 border-t border-amber-500/10">
+        <div class="max-w-4xl mx-auto text-center flex flex-col items-center justify-center">
+            <span class="text-xs md:text-sm font-extrabold tracking-widest text-amber-400 uppercase mb-6">
+                Didukung Oleh :
+            </span>
+            <div class="flex items-center justify-center gap-6 md:gap-10 mb-6 bg-slate-900/50 p-6 rounded-2xl border border-slate-800 shadow-inner">
+                <img src="https://sekadaukab.go.id/images/logo-sekadau.png" alt="Logo Kabupaten Sekadau" class="h-16 md:h-24 object-contain transition-transform duration-300 hover:scale-105" />
+                <img src="https://aws.sekadaukab.go.id/storage/3251/WhatsApp-Image-2026-01-12-at-11.49.49.jpeg" alt="Sponsor Logo Sekadau" class="h-16 md:h-24 object-contain rounded-lg transition-transform duration-300 hover:scale-105" />
+            </div>
+            <h3 class="text-base md:text-xl font-bold text-slate-200 tracking-wide uppercase">
+                Pemerintah Kabupaten Sekadau
+            </h3>
+        </div>
+    </section>
+
+    <!-- 5. FOOTER -->
+    <footer class="w-full bg-[#050814] text-slate-400 text-xs py-4 px-4 md:px-8 border-t border-amber-500/20">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 text-center sm:text-left font-medium">
+            <div class="flex items-center gap-2">
+                <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>web dikembangkan oleh : <strong class="text-amber-400 font-semibold">Taufik Hidayat, S.Pd.</strong></span>
+            </div>
+            <div class="text-slate-400">
+                <span>&copy; smpn07satapmahap 2026. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPT PRELOADER -->
+    <script is:inline>
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loading-screen');
+            if (loader) {
+                loader.classList.add('opacity-0', 'pointer-events-none');
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 500);
+            }
+        });
+    </script>
+
+</body>
+</html>

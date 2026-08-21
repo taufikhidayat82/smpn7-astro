@@ -1,0 +1,18 @@
+import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
+
+const beritaCollection = defineCollection({
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./src/content/berita" }),
+  schema: z.object({
+    title: z.string(),
+    category: z.string(),
+    summary: z.string(),
+    image: z.string(),
+    pubDate: z.date(),
+    isFeatured: z.boolean().default(false),
+  }),
+});
+
+export const collections = {
+  'berita': beritaCollection,
+};

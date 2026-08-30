@@ -396,6 +396,66 @@ const getCategoryBadge = (category: string) => {
                     </div>
 
                 </div>
+<!-- ========================================== -->
+                <!-- MULAI: FITUR GOOGLE MAPS LOKASI SEKOLAH    -->
+                <!-- ========================================== -->
+                <div class="mt-10 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <!-- Header Peta -->
+                    <div class="bg-[#0a1128] px-6 py-4 border-b border-amber-500/30 flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-amber-400/20 text-amber-400 flex items-center justify-center shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon>
+                                    <line x1="9" y1="3" x2="9" y2="18"></line>
+                                    <line x1="15" y1="6" x2="15" y2="21"></line>
+                                </svg>
+                            </div>
+                            <h2 class="text-base font-extrabold text-amber-400">Peta Lokasi Sekolah</h2>
+                        </div>
+                        
+                        <!-- Tombol Pintasan ke Maps (Desktop) -->
+                        <!-- URL diperbarui dengan koordinat dan label nama -->
+                        <a href="https://www.google.com/maps?q=-0.4825,110.7941+(SMP%20Negeri%2007%20Satap%20Nanga%20Mahap)" target="_blank" rel="noopener noreferrer" class="hidden sm:flex items-center gap-2 text-xs font-bold bg-amber-500 text-slate-900 px-3 py-1.5 rounded hover:bg-amber-400 transition-colors shadow-sm">
+                            Buka di Maps
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        </a>
+                    </div>
+
+                    <!-- Wadah iframe Peta -->
+                    <div class="w-full h-72 md:h-[400px] relative bg-slate-100 group overflow-hidden">
+                        <!-- iframe src diperbarui dengan label +(SMP%20Negeri%2007%20Satap%20Nanga%20Mahap) untuk mengunci titik -->
+                        <iframe 
+                            src="https://maps.google.com/maps?q=-0.4825,110.7941+(SMP%20Negeri%2007%20Satap%20Nanga%20Mahap)&t=m&z=16&output=embed" 
+                            class="w-full h-full border-0 grayscale-[15%] contrast-125 group-hover:grayscale-0 transition-all duration-700" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                        
+                        <!-- Tombol Pintasan ke Maps (Mobile / HP) -->
+                        <!-- URL diperbarui dengan koordinat dan label nama -->
+                        <a href="https://www.google.com/maps?q=-0.4825,110.7941+(SMP%20Negeri%2007%20Satap%20Nanga%20Mahap)" target="_blank" rel="noopener noreferrer" class="sm:hidden absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 text-xs font-bold bg-amber-500 text-slate-900 px-5 py-2.5 rounded-full shadow-xl hover:bg-amber-400 transition-colors z-10 whitespace-nowrap border border-amber-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                            Buka di Aplikasi Maps
+                        </a>
+                    </div>
+
+                    <!-- Keterangan Alamat Terintegrasi Data Astro -->
+                    <div class="bg-slate-50 p-4 md:px-6 border-t border-slate-100 flex items-start gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-amber-600 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <div>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                <strong class="text-slate-900">Alamat Sekolah:</strong> {identitasSekolah.alamat}, Kel. {identitasSekolah.kelurahan}, {identitasSekolah.kecamatan}, {identitasSekolah.kabupaten}, {identitasSekolah.provinsi} ({identitasSekolah.kodePos}).
+                            </p>
+                            <span class="font-mono text-[10px] md:text-xs text-slate-500 mt-1.5 inline-block bg-slate-200/50 px-2 py-0.5 rounded border border-slate-200">
+                                {identitasSekolah.koordinat}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!-- ========================================== -->
+                <!-- AKHIR: FITUR GOOGLE MAPS                   -->
+                <!-- ========================================== -->
 
                 <!-- 5. SEKSI BERITA & PENGUMUMAN TERBARU (DISAMAKAN DENGAN [ID].ASTRO) -->
                 {beritaTerbaru.length > 0 && (

@@ -396,7 +396,7 @@ const getCategoryBadge = (category: string) => {
                     </div>
 
                 </div>
-<!-- ========================================== -->
+                <!-- ========================================== -->
                 <!-- MULAI: FITUR GOOGLE MAPS LOKASI SEKOLAH    -->
                 <!-- ========================================== -->
                 <div class="mt-10 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -422,18 +422,17 @@ const getCategoryBadge = (category: string) => {
                     </div>
 
                     <!-- Wadah iframe Peta -->
-                    <div class="w-full h-72 md:h-[400px] relative bg-slate-100 group overflow-hidden">
-                        <!-- iframe src diperbarui dengan label +(SMP%20Negeri%2007%20Satap%20Nanga%20Mahap) untuk mengunci titik -->
+                    <div class="w-full h-72 md:h-[400px] relative bg-slate-100 overflow-hidden">
+                        <!-- iframe src menggunakan format koordinat murni dan menambahkan hl=id (Bahasa Indonesia). Class CSS filter dihapus. -->
                         <iframe 
-                            src="https://maps.google.com/maps?q=-0.4825,110.7941+(SMP%20Negeri%2007%20Satap%20Nanga%20Mahap)&t=m&z=16&output=embed" 
-                            class="w-full h-full border-0 grayscale-[15%] contrast-125 group-hover:grayscale-0 transition-all duration-700" 
+                            src="https://maps.google.com/maps?q=-0.4825,110.7941&hl=id&z=16&output=embed" 
+                            class="w-full h-full border-0" 
                             allowfullscreen="" 
                             loading="lazy" 
                             referrerpolicy="no-referrer-when-downgrade">
                         </iframe>
                         
                         <!-- Tombol Pintasan ke Maps (Mobile / HP) -->
-                        <!-- URL diperbarui dengan koordinat dan label nama -->
                         <a href="https://www.google.com/maps?q=-0.4825,110.7941+(SMP%20Negeri%2007%20Satap%20Nanga%20Mahap)" target="_blank" rel="noopener noreferrer" class="sm:hidden absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 text-xs font-bold bg-amber-500 text-slate-900 px-5 py-2.5 rounded-full shadow-xl hover:bg-amber-400 transition-colors z-10 whitespace-nowrap border border-amber-300">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                             Buka di Aplikasi Maps

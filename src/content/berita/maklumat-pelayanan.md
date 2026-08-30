@@ -3,7 +3,7 @@ title: "Tegaskan Komitmen Layanan: SMPN 07 Satap Nanga Mahap Rilis Maklumat Pela
 category: "KEGIATAN"
 summary: "SMPN 07 Satap Nanga Mahap Rilis Maklumat Pelayanan"
 image: "https://i.pinimg.com/736x/e7/60/6f/e7606f62faf889732d500e2e912e062d.jpg"
-pubDate: 2026-08-28
+pubDate: 2026-08-25
 isFeatured: false
 ---
 

@@ -75,6 +75,18 @@ const getCategoryBadge = (category: string) => {
         .nav-royal-btn:hover::after { width: 80%; }
         .nav-royal-btn.active { color: #fbbf24; font-weight: 700; }
         .nav-royal-btn.active::after { width: 85%; }
+
+        /* KELAS CSS ANIMASI WIPE UP / REVEAL */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: opacity, transform;
+        }
+        .reveal-up.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
@@ -82,11 +94,8 @@ const getCategoryBadge = (category: string) => {
     <!-- OVERLAY ANIMASI LOADING INTERAKTIF -->
     <div id="page-loader" class="fixed inset-0 bg-[#0a1128] z-[9999] flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto">
         <div class="relative flex items-center justify-center">
-            <!-- Ring Ping Efek Aura -->
             <div class="w-24 h-24 rounded-full border-2 border-amber-400/30 animate-ping absolute"></div>
-            <!-- Spinner Rotasi -->
             <div class="w-20 h-20 rounded-full border-4 border-amber-400/20 border-t-amber-400 animate-spin"></div>
-            <!-- Logo Sekolah Berdenyut -->
             <img src="/images/logosmp7.png" alt="Loading SMPN 07" class="w-10 h-10 absolute object-contain animate-bounce" />
         </div>
         <p class="mt-5 text-amber-400 font-bold text-xs tracking-[0.2em] uppercase animate-pulse">
@@ -95,7 +104,7 @@ const getCategoryBadge = (category: string) => {
     </div>
 
     <!-- 1. HEADER & NAVIGASI -->
-    <header class="w-full shadow-lg">
+    <header class="w-full shadow-lg reveal-up active"> <!-- Header langsung aktif tanpa menunggu scroll -->
         <div class="bg-[#0a1128] text-slate-300 text-xs py-2 px-4 md:px-8 flex flex-col md:flex-row justify-between items-center border-b border-amber-500/30 gap-1 md:gap-0">
             <span class="font-semibold tracking-wide text-center md:text-left text-[11px] md:text-xs text-slate-200">
                 SEKOLAH MENENGAH PERTAMA NEGERI 07 SATAP NANGA MAHAP
@@ -108,7 +117,6 @@ const getCategoryBadge = (category: string) => {
         <!-- LATAR GAMBAR HEADER -->
         <div class="relative py-6 px-4 border-b border-amber-500/20 bg-cover bg-center bg-no-repeat overflow-hidden" style="background-image: url('/images/latar-header.webp');">
             <div class="absolute inset-0 bg-white/10"></div>
-
             <div class="relative max-w-7xl mx-auto flex items-center justify-center">
                 <div class="hidden md:block flex-1 h-[1.5px] bg-gradient-to-r from-transparent via-amber-600 to-amber-700"></div>
                 <div class="flex flex-col items-center px-4 md:px-12 text-center">
@@ -129,15 +137,7 @@ const getCategoryBadge = (category: string) => {
         <nav class="bg-[#0a1128]">
             <div class="max-w-7xl mx-auto px-4 md:px-8 flex flex-col md:flex-row items-center justify-between">
                 <ul class="flex flex-wrap items-center justify-center gap-1 md:gap-4 py-1 md:py-0">
-                    <li>
-                        <a href="#" class="nav-royal-btn active">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                                <polyline points="9 22 9 12 15 12 15 22"/>
-                            </svg>
-                            <span>Beranda</span>
-                        </a>
-                    </li>
+                    <li><a href="#" class="nav-royal-btn active">Beranda</a></li>
                     <li><a href="/profil-sekolah" class="nav-royal-btn">Profil Sekolah</a></li>
                     <li><a href="#" class="nav-royal-btn">Sejarah Sekolah</a></li>
                     <li><a href="#" class="nav-royal-btn">Visi & Misi</a></li>
@@ -146,9 +146,6 @@ const getCategoryBadge = (category: string) => {
                 </ul>
                 <div class="pb-3 md:pb-0 py-2">
                     <a href="#kontak" class="inline-flex items-center gap-2 border-2 border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-[#0a1128] px-4 py-1.5 rounded text-xs font-extrabold tracking-wider transition-all duration-300 shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                        </svg>
                         <span>KONTAK KAMI</span>
                     </a>
                 </div>
@@ -157,30 +154,28 @@ const getCategoryBadge = (category: string) => {
     </header>
 
     <!-- 2. HERO SECTION DINAMIS: BERITA UTAMA -->
-    <section class="relative bg-[#0a1128] text-white py-12 md:py-20 px-4 md:px-8 overflow-hidden">
+    <section class="relative bg-[#0a1128] text-white py-12 md:py-20 px-4 md:px-8 overflow-hidden reveal-up">
         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fbbf24_1px,transparent_1px)] [background-size:16px_16px]"></div>
 
         <div class="relative max-w-7xl mx-auto z-10">
             <div class="flex items-center justify-between mb-6 pb-4 border-b border-amber-500/20">
                 <div class="flex items-center gap-3">
                     <span class="inline-flex items-center gap-1.5 bg-amber-400 text-[#0a1128] px-3 py-1 rounded-full text-xs font-extrabold tracking-wider uppercase">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                         BERITA UTAMA
                     </span>
                     <span class="hidden sm:inline-block text-slate-400 text-xs font-medium">| Artikel Pilihan Sekolah Terbaru</span>
                 </div>
-
                 <div class="flex items-center gap-2">
                     <button id="prevSlide" class="w-10 h-10 rounded-xl bg-slate-800/80 hover:bg-amber-400 hover:text-[#0a1128] text-white border border-slate-700 flex items-center justify-center transition-all duration-300 shadow-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                        &larr;
                     </button>
                     <button id="nextSlide" class="w-10 h-10 rounded-xl bg-slate-800/80 hover:bg-amber-400 hover:text-[#0a1128] text-white border border-slate-700 flex items-center justify-center transition-all duration-300 shadow-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        &rarr;
                     </button>
                 </div>
             </div>
 
-            <!-- CAROUSEL WRAPPER BERITA UTAMA (TERBARU) -->
+            <!-- CAROUSEL WRAPPER BERITA UTAMA -->
             <div id="heroCarousel" class="relative overflow-hidden min-h-[380px] md:min-h-[340px]">
                 {carouselBerita.length > 0 ? (
                     carouselBerita.map((item, index) => (
@@ -198,35 +193,28 @@ const getCategoryBadge = (category: string) => {
                                     <p class="text-slate-300 text-sm md:text-base mb-6 line-clamp-3">
                                         {item.data.summary}
                                     </p>
-                                    <div class="flex flex-wrap items-center gap-4">
-                                        <a href={`/berita/${item.slug ?? item.id}`} class="bg-amber-400 hover:bg-amber-500 text-[#0a1128] font-extrabold px-6 py-3 rounded-xl text-sm transition shadow-lg inline-flex items-center gap-2">
-                                            <span>BACA SELENGKAPNYA</span>
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                                        </a>
-                                    </div>
+                                    <a href={`/berita/${item.slug ?? item.id}`} class="bg-amber-400 hover:bg-amber-500 text-[#0a1128] font-extrabold px-6 py-3 rounded-xl text-sm transition shadow-lg inline-flex items-center gap-2">
+                                        BACA SELENGKAPNYA
+                                    </a>
                                 </div>
                                 <div class="md:col-span-5">
                                     <div class="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-amber-500/30 group">
                                         <img src={item.data.image} alt={item.data.title} class="w-full h-64 md:h-72 object-cover transition duration-500 group-hover:scale-105" />
-                                        <div class="absolute inset-0 bg-gradient-to-t from-[#0a1128]/80 via-transparent to-transparent"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     ))
                 ) : (
-                    <div class="text-center py-16 text-slate-400">
-                        <p class="text-lg">Belum ada artikel berita yang tersedia.</p>
-                    </div>
+                    <div class="text-center py-16 text-slate-400">Belum ada artikel berita yang tersedia.</div>
                 )}
             </div>
-
-            <!-- INDICATOR DOTS OTOMATIS -->
+            
             {carouselBerita.length > 0 && (
                 <div class="flex items-center justify-between mt-6 pt-4 border-t border-amber-500/10">
                     <div class="flex items-center gap-2" id="slideDots">
                         {carouselBerita.map((_, index) => (
-                            <button class={`h-2 rounded-full transition-all duration-300 ${index === 0 ? 'w-8 bg-amber-400' : 'w-2.5 bg-slate-700 hover:bg-slate-500'}`} data-slide={index}></button>
+                            <button class={`h-2 rounded-full transition-all duration-300 ${index === 0 ? 'w-8 bg-amber-400' : 'w-2.5 bg-slate-700'}`} data-slide={index}></button>
                         ))}
                     </div>
                     <div class="text-xs font-bold text-slate-400">
@@ -237,45 +225,32 @@ const getCategoryBadge = (category: string) => {
         </div>
     </section>
 
-    <!-- 3. QUICK ACCESS CARDS -->
+    <!-- 3. QUICK ACCESS CARDS DENGAN EFEK DELAY -->
     <section class="max-w-6xl mx-auto px-6 -mt-8 relative z-20">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 justify-center">
-            <a href="/berita/spmb-20262027" class="bg-amber-400 hover:bg-amber-500 p-4 rounded-xl shadow-lg text-slate-900 font-bold flex items-center justify-center space-x-3 cursor-pointer transition transform hover:-translate-y-1">
-                <span class="text-2xl">🎓</span>
-                <span>DAFTAR PPDB</span>
+            <a href="/berita/spmb-20262027" class="reveal-up bg-amber-400 hover:bg-amber-500 p-4 rounded-xl shadow-lg text-slate-900 font-bold flex items-center justify-center space-x-3 transition transform hover:-translate-y-1" style="transition-delay: 100ms;">
+                <span class="text-2xl">雌</span><span>DAFTAR PPDB</span>
             </a>
-            
-            <a href="/jadwal-belajar" class="bg-[#0a1128] hover:bg-blue-900 p-4 rounded-xl shadow-lg text-white font-bold flex items-center justify-center space-x-3 cursor-pointer transition transform hover:-translate-y-1">
-                <span class="text-2xl">📚</span>
-                <span>JADWAL BELAJAR</span>
+            <a href="/jadwal-belajar" class="reveal-up bg-[#0a1128] hover:bg-blue-900 p-4 rounded-xl shadow-lg text-white font-bold flex items-center justify-center space-x-3 transition transform hover:-translate-y-1" style="transition-delay: 200ms;">
+                <span class="text-2xl">答</span><span>JADWAL BELAJAR</span>
             </a>
-
-            <div class="bg-[#0a1128] hover:bg-blue-900 p-4 rounded-xl shadow-lg text-white font-bold flex items-center justify-center space-x-3 cursor-pointer transition transform hover:-translate-y-1">
-                <span class="text-2xl">💻</span>
-                <span>PORTAL SISWA</span>
+            <div class="reveal-up bg-[#0a1128] hover:bg-blue-900 p-4 rounded-xl shadow-lg text-white font-bold flex items-center justify-center space-x-3 transition transform hover:-translate-y-1 cursor-pointer" style="transition-delay: 300ms;">
+                <span class="text-2xl">捗</span><span>PORTAL SISWA</span>
             </div>
-
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLScHkWi0XynRNwRhSe5CLknhP88_rE6T-x1cuCtcLLDqsb58Ow/viewform?usp=dialog" target="_blank" class="bg-amber-400 hover:bg-amber-500 p-4 rounded-xl shadow-lg text-slate-900 font-extrabold flex items-center justify-center space-x-3 cursor-pointer transition transform hover:-translate-y-1 group">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-red-600 to-amber-500 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 drop-shadow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
-                </div>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLScHkWi0XynRNwRhSe5CLknhP88_rE6T-x1cuCtcLLDqsb58Ow/viewform?usp=dialog" target="_blank" class="reveal-up bg-amber-400 hover:bg-amber-500 p-4 rounded-xl shadow-lg text-slate-900 font-extrabold flex items-center justify-center space-x-3 transition transform hover:-translate-y-1" style="transition-delay: 400ms;">
                 <span>LAYANAN PENGADUAN</span>
             </a>
         </div>
     </section>
 
-    <!-- 4. BERITA & PENGUMUMAN TERBARU (DIURUTKAN KRONOLOGIS TERBARU) -->
+<!-- 4. BERITA & PENGUMUMAN TERBARU -->
     <section id="berita-section" class="max-w-7xl mx-auto px-6 py-16 flex-grow">
-        <h2 class="text-2xl font-bold mb-8 text-slate-900 border-l-4 border-[#0a1128] pl-3">BERITA & PENGUMUMAN TERBARU</h2>
+        <h2 class="text-2xl font-bold mb-8 text-slate-900 border-l-4 border-[#0a1128] pl-3 reveal-up">BERITA & PENGUMUMAN TERBARU</h2>
         
         <div class="grid md:grid-cols-3 gap-6">
             {mainBerita.length > 0 ? (
-                mainBerita.map((item) => (
-                    <a href={`/berita/${item.slug ?? item.id}`} class="block bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition hover:-translate-y-1 group">
+                mainBerita.map((item, index) => (
+                    <a href={`/berita/${item.slug ?? item.id}`} class="reveal-up block bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition hover:-translate-y-1 group" style={`transition-delay: ${index * 150}ms`}>
                         <img src={item.data.image} alt={item.data.title} class="w-full h-48 object-cover" />
                         <div class="p-5">
                             <span class={`text-xs font-bold px-2.5 py-1 rounded ${getCategoryBadge(item.data.category)}`}>
@@ -287,14 +262,14 @@ const getCategoryBadge = (category: string) => {
                     </a>
                 ))
             ) : (
-                <p class="text-slate-500 col-span-3 text-center py-6">Belum ada berita yang diterbitkan.</p>
+                <p class="text-slate-500 col-span-3 text-center py-6 reveal-up">Belum ada berita yang diterbitkan.</p>
             )}
         </div>
 
         {extraBerita.length > 0 && (
             <div id="extraBeritaContainer" class="grid md:grid-cols-3 gap-6 mt-6 hidden">
-                {extraBerita.map((item) => (
-                    <a href={`/berita/${item.slug ?? item.id}`} class="block bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition hover:-translate-y-1 group">
+                {extraBerita.map((item, index) => (
+                    <a href={`/berita/${item.slug ?? item.id}`} class="block bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition hover:-translate-y-1 group reveal-up" style={`transition-delay: ${index * 100}ms`}>
                         <img src={item.data.image} alt={item.data.title} class="w-full h-48 object-cover" />
                         <div class="p-5">
                             <span class={`text-xs font-bold px-2.5 py-1 rounded ${getCategoryBadge(item.data.category)}`}>
@@ -309,148 +284,49 @@ const getCategoryBadge = (category: string) => {
         )}
 
         {extraBerita.length > 0 && (
-            <div class="mt-10 text-center">
+            <div class="mt-10 text-center reveal-up">
                 <button id="toggleBeritaBtn" type="button" class="inline-flex items-center gap-2 bg-[#0a1128] hover:bg-blue-900 text-white font-bold px-6 py-3 rounded-lg text-sm transition shadow-md">
                     <span id="btnText">LIHAT SEMUA BERITA</span>
-                    <svg id="btnIcon" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
                 </button>
             </div>
         )}
     </section>
-
+    
     <!-- 5. SEKSI KONTAK KAMI -->
-    <section id="kontak" class="relative bg-[#0a1128] text-white py-16 md:py-20 px-4 md:px-8 border-t border-amber-500/20 overflow-hidden">
+    <section id="kontak" class="relative bg-[#0a1128] text-white py-16 md:py-20 px-4 md:px-8 border-t border-amber-500/20 overflow-hidden reveal-up">
         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fbbf24_1px,transparent_1px)] [background-size:20px_20px]"></div>
-
         <div class="relative max-w-7xl mx-auto z-10">
             <div class="text-center max-w-2xl mx-auto mb-12">
                 <span class="inline-block bg-amber-400/20 text-amber-400 text-xs font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider mb-3 border border-amber-400/30">
                     HUBUNGI KAMI
                 </span>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
-                    Layanan & Informasi Kontak
-                </h2>
-                <p class="text-slate-400 text-sm md:text-base mt-2">
-                    Kami siap melayani pertanyaan, informasi pendaftaran, dan hubungan kemitraan sekolah.
-                </p>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">Layanan & Informasi Kontak</h2>
             </div>
-
+            
             <div class="grid lg:grid-cols-12 gap-8 items-start">
-                <div class="lg:col-span-5 bg-slate-900/80 backdrop-blur-md p-6 md:p-8 rounded-2xl border border-amber-500/20 shadow-xl flex flex-col justify-between h-full">
-                    <div>
-                        <div class="flex items-center gap-3 mb-6">
-                            <div class="w-12 h-12 rounded-xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-400 shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                    <circle cx="12" cy="10" r="3"></circle>
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-bold text-white">Alamat Resmi Sekolah</h3>
-                                <p class="text-xs text-amber-400 font-semibold uppercase tracking-wider">SMPN 07 Satap Nanga Mahap</p>
-                            </div>
-                        </div>
-
-                        <p class="text-slate-300 text-sm leading-relaxed mb-6 pl-2 border-l-2 border-amber-400">
-                            Jl. Lintas Karang Betung, Desa Tembesuk, Kecamatan Sekadau Hilir, Kabupaten Sekadau.<br>
-                            <span class="font-bold text-white mt-1 inline-block">Kode Pos : 78582</span>
-                        </p>
-                    </div>
-
-                    <div class="bg-[#0a1128]/90 p-4 rounded-xl border border-slate-800 mt-4">
-                        <div class="flex items-center gap-3 text-xs text-slate-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
-                            </svg>
-                            <div>
-                                <p class="font-bold text-white">Jam Operasional Kantor:</p>
-                                <p>Senin - Sabtu: 07.00 - 13.00 WIB</p>
-                            </div>
+                <!-- Inner box 1 -->
+                <div class="lg:col-span-5 bg-slate-900/80 backdrop-blur-md p-6 md:p-8 rounded-2xl border border-amber-500/20 shadow-xl reveal-up" style="transition-delay: 100ms;">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div>
+                            <h3 class="text-lg font-bold text-white">Alamat Resmi Sekolah</h3>
+                            <p class="text-xs text-amber-400 font-semibold uppercase tracking-wider">SMPN 07 Satap Nanga Mahap</p>
                         </div>
                     </div>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-6 pl-2 border-l-2 border-amber-400">
+                        Jl. Lintas Karang Betung, Desa Tembesuk, Kecamatan Sekadau Hilir, Kabupaten Sekadau.<br>
+                        <span class="font-bold text-white mt-1 inline-block">Kode Pos : 78582</span>
+                    </p>
                 </div>
 
+                <!-- Inner box 2 (Sosmed & WA) -->
                 <div class="lg:col-span-7 grid sm:grid-cols-2 gap-4">
-                    <a href="https://wa.me/6281347636738" target="_blank" rel="noopener noreferrer" class="group bg-slate-900/60 hover:bg-emerald-950/40 p-6 rounded-2xl border border-slate-800 hover:border-emerald-500/50 transition-all duration-300 hover:-translate-y-1 shadow-lg flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                                    </svg>
-                                </div>
-                                <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full">Chat WA</span>
-                            </div>
-                            <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">WhatsApp Hotline</h4>
-                            <p class="text-base font-bold text-white mt-1 group-hover:text-emerald-400 transition-colors">+62 813-4763-6738</p>
-                        </div>
-                        <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center gap-1.5 text-xs text-slate-400 group-hover:text-emerald-300">
-                            <span>Hubungi via WhatsApp</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                        </div>
+                    <a href="https://wa.me/6281347636738" class="reveal-up group bg-slate-900/60 p-6 rounded-2xl border border-slate-800 hover:border-emerald-500/50 shadow-lg" style="transition-delay: 200ms;">
+                        <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">WhatsApp Hotline</h4>
+                        <p class="text-base font-bold text-white mt-1">+62 813-4763-6738</p>
                     </a>
-
-                    <a href="mailto:smpn07satapnangamahap@gmail.com" class="group bg-slate-900/60 hover:bg-blue-950/40 p-6 rounded-2xl border border-slate-800 hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1 shadow-lg flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                                        <polyline points="22,6 12,13 2,6"></polyline>
-                                    </svg>
-                                </div>
-                                <span class="text-xs font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full">Email Resmi</span>
-                            </div>
-                            <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Email Surat</h4>
-                            <p class="text-xs font-bold text-white mt-1 break-all group-hover:text-blue-400 transition-colors">smpn07satapnangamahap@gmail.com</p>
-                        </div>
-                        <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center gap-1.5 text-xs text-slate-400 group-hover:text-blue-300">
-                            <span>Kirim Surat Elektronik</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                        </div>
-                    </a>
-
-                    <a href="https://instagram.com/smpn07_satap_nanga_mahap" target="_blank" rel="noopener noreferrer" class="group bg-slate-900/60 hover:bg-pink-950/40 p-6 rounded-2xl border border-slate-800 hover:border-pink-500/50 transition-all duration-300 hover:-translate-y-1 shadow-lg flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="w-12 h-12 rounded-xl bg-pink-500/10 text-pink-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                                    </svg>
-                                </div>
-                                <span class="text-xs font-bold text-pink-400 bg-pink-500/10 px-2.5 py-1 rounded-full">Instagram</span>
-                            </div>
-                            <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Sosial Media</h4>
-                            <p class="text-sm font-bold text-white mt-1 group-hover:text-pink-400 transition-colors">@smpn07_satap_nanga_mahap</p>
-                        </div>
-                        <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center gap-1.5 text-xs text-slate-400 group-hover:text-pink-300">
-                            <span>Lihat Galeri Foto & Kegiatan</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                        </div>
-                    </a>
-
-                    <a href="https://facebook.com/smpn07_satap_nanga_mahap" target="_blank" rel="noopener noreferrer" class="group bg-slate-900/60 hover:bg-sky-950/40 p-6 rounded-2xl border border-slate-800 hover:border-sky-500/50 transition-all duration-300 hover:-translate-y-1 shadow-lg flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                                    </svg>
-                                </div>
-                                <span class="text-xs font-bold text-sky-400 bg-sky-500/10 px-2.5 py-1 rounded-full">Facebook</span>
-                            </div>
-                            <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Halaman Facebook</h4>
-                            <p class="text-sm font-bold text-white mt-1 group-hover:text-sky-400 transition-colors">@smpn07_satap_nanga_mahap</p>
-                        </div>
-                        <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center gap-1.5 text-xs text-slate-400 group-hover:text-sky-300">
-                            <span>Ikuti Komunitas Facebook</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                        </div>
+                    <a href="mailto:smpn07satapnangamahap@gmail.com" class="reveal-up group bg-slate-900/60 p-6 rounded-2xl border border-slate-800 hover:border-blue-500/50 shadow-lg" style="transition-delay: 300ms;">
+                        <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Email Surat</h4>
+                        <p class="text-xs font-bold text-white mt-1">smpn07satapnangamahap@gmail.com</p>
                     </a>
                 </div>
             </div>
@@ -458,25 +334,18 @@ const getCategoryBadge = (category: string) => {
     </section>
 
     <!-- 5.5 SEKSI DUKUNGAN -->
-    <section class="bg-[#070c1e] text-white py-12 px-4 md:px-8 border-t border-amber-500/10">
+    <section class="bg-[#070c1e] text-white py-12 px-4 md:px-8 border-t border-amber-500/10 reveal-up">
         <div class="max-w-4xl mx-auto text-center flex flex-col items-center justify-center">
-            <span class="text-xs md:text-sm font-extrabold tracking-widest text-amber-400 uppercase mb-6">
-                Didukung Oleh :
-            </span>
-            
+            <span class="text-xs md:text-sm font-extrabold tracking-widest text-amber-400 uppercase mb-6">Didukung Oleh :</span>
             <div class="flex items-center justify-center gap-6 md:gap-10 mb-6 bg-slate-900/50 p-6 rounded-2xl border border-slate-800 shadow-inner">
-                <img src="https://sekadaukab.go.id/images/logo-sekadau.png" alt="Logo Kabupaten Sekadau" class="h-16 md:h-24 object-contain transition-transform duration-300 hover:scale-105" />
-                <img src="https://aws.sekadaukab.go.id/storage/3251/WhatsApp-Image-2026-01-12-at-11.49.49.jpeg" alt="Sponsor Logo Sekadau" class="h-16 md:h-24 object-contain rounded-lg transition-transform duration-300 hover:scale-105" />
+                <img src="https://sekadaukab.go.id/images/logo-sekadau.png" alt="Logo Kabupaten Sekadau" class="h-16 md:h-24 object-contain" />
             </div>
-
-            <h3 class="text-base md:text-xl font-bold text-slate-200 tracking-wide uppercase">
-                Pemerintah Kabupaten Sekadau
-            </h3>
+            <h3 class="text-base md:text-xl font-bold text-slate-200 tracking-wide uppercase">Pemerintah Kabupaten Sekadau</h3>
         </div>
     </section>
 
     <!-- 6. FOOTER -->
-    <footer class="w-full bg-[#050814] text-slate-400 text-xs py-4 px-4 md:px-8 border-t border-amber-500/20 shadow-2xl">
+    <footer class="w-full bg-[#050814] text-slate-400 text-xs py-4 px-4 md:px-8 border-t border-amber-500/20 shadow-2xl reveal-up">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 text-center sm:text-left font-medium">
             <div class="flex items-center gap-2">
                 <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -490,78 +359,16 @@ const getCategoryBadge = (category: string) => {
 
     <!-- SCRIPT LOGIKA INTERAKTIF -->
     <script>
+        // LOGIKA LOADING (Tetap dipertahankan)
         const loader = document.getElementById('page-loader');
-
         function hideLoader() {
             if (!loader) return;
             loader.classList.add('opacity-0', 'pointer-events-none');
-            setTimeout(() => {
-                loader.classList.add('hidden');
-            }, 300);
+            setTimeout(() => { loader.classList.add('hidden'); }, 300);
         }
+        window.addEventListener('load', () => { setTimeout(hideLoader, 300); });
 
-        function showLoader() {
-            if (!loader) return;
-            loader.classList.remove('hidden', 'pointer-events-none');
-            void loader.offsetWidth;
-            loader.classList.remove('opacity-0');
-        }
-
-        window.addEventListener('load', () => {
-            setTimeout(hideLoader, 300);
-        });
-
-        document.addEventListener('click', (e) => {
-            const anchor = e.target.closest('a');
-            if (!anchor) return;
-
-            const href = anchor.getAttribute('href');
-            const target = anchor.getAttribute('target');
-
-            if (
-                !href ||
-                href.startsWith('#') ||
-                href.startsWith('javascript:') ||
-                target === '_blank' ||
-                href.startsWith('mailto:') ||
-                href.startsWith('tel:') ||
-                (href.startsWith('http') && !href.includes(window.location.hostname))
-            ) {
-                return;
-            }
-
-            showLoader();
-        });
-
-        window.addEventListener('pageshow', (event) => {
-            if (event.persisted) {
-                hideLoader();
-            }
-        });
-
-        // LOGIKA TOGGLE BERITA
-        const toggleBeritaBtn = document.getElementById('toggleBeritaBtn');
-        const extraBeritaContainer = document.getElementById('extraBeritaContainer');
-        const btnText = document.getElementById('btnText');
-        const btnIcon = document.getElementById('btnIcon');
-
-        if (toggleBeritaBtn && extraBeritaContainer) {
-            toggleBeritaBtn.addEventListener('click', () => {
-                const isHidden = extraBeritaContainer.classList.contains('hidden');
-                
-                if (isHidden) {
-                    extraBeritaContainer.classList.remove('hidden');
-                    if(btnText) btnText.textContent = 'SEMBUNYIKAN BERITA';
-                    if(btnIcon) btnIcon.classList.add('rotate-180');
-                } else {
-                    extraBeritaContainer.classList.add('hidden');
-                    if(btnText) btnText.textContent = 'LIHAT SEMUA BERITA';
-                    if(btnIcon) btnIcon.classList.remove('rotate-180');
-                }
-            });
-        }
-
-        // LOGIKA SLIDER HERO
+        // LOGIKA SLIDER HERO (Tetap dipertahankan)
         let currentSlideIndex = 0;
         const slides = document.querySelectorAll('.hero-slide');
         const dots = document.querySelectorAll('#slideDots button');
@@ -569,7 +376,6 @@ const getCategoryBadge = (category: string) => {
 
         function updateSlider() {
             if (!slides.length) return;
-            
             slides.forEach((slide, index) => {
                 if (index === currentSlideIndex) {
                     slide.classList.remove('hidden', 'opacity-0', 'scale-95', 'absolute', 'inset-0');
@@ -579,47 +385,73 @@ const getCategoryBadge = (category: string) => {
                     slide.classList.add('hidden', 'opacity-0', 'scale-95', 'absolute', 'inset-0');
                 }
             });
-
             dots.forEach((dot, index) => {
-                if (index === currentSlideIndex) {
-                    dot.className = "w-8 h-2 rounded-full bg-amber-400 transition-all duration-300";
+                dot.className = index === currentSlideIndex 
+                    ? "w-8 h-2 rounded-full bg-amber-400 transition-all duration-300"
+                    : "w-2.5 h-2 rounded-full bg-slate-700 hover:bg-slate-500 transition-all duration-300";
+            });
+            if (counterElement) counterElement.textContent = `0${currentSlideIndex + 1}`;
+        }
+        dots.forEach((dot, idx) => {
+            dot.addEventListener('click', () => { currentSlideIndex = idx; updateSlider(); });
+        });
+        document.getElementById('nextSlide')?.addEventListener('click', () => {
+            if (slides.length > 0) { currentSlideIndex = (currentSlideIndex + 1) % slides.length; updateSlider(); }
+        });
+        document.getElementById('prevSlide')?.addEventListener('click', () => {
+            if (slides.length > 0) { currentSlideIndex = (currentSlideIndex - 1 + slides.length) % slides.length; updateSlider(); }
+        });
+        if (slides.length > 1) {
+            setInterval(() => { currentSlideIndex = (currentSlideIndex + 1) % slides.length; updateSlider(); }, 6000);
+        }
+
+        // TOGGLE BERITA
+        const toggleBeritaBtn = document.getElementById('toggleBeritaBtn');
+        const extraBeritaContainer = document.getElementById('extraBeritaContainer');
+        const btnText = document.getElementById('btnText');
+        if (toggleBeritaBtn && extraBeritaContainer) {
+            toggleBeritaBtn.addEventListener('click', () => {
+                const isHidden = extraBeritaContainer.classList.contains('hidden');
+                if (isHidden) {
+                    extraBeritaContainer.classList.remove('hidden');
+                    if(btnText) btnText.textContent = 'SEMBUNYIKAN BERITA';
+                    // Trigger observer lagi untuk berita tambahan yang baru muncul
+                    setTimeout(() => {
+                        const newReveals = extraBeritaContainer.querySelectorAll('.reveal-up');
+                        newReveals.forEach(el => revealObserver.observe(el));
+                    }, 50);
                 } else {
-                    dot.className = "w-2.5 h-2 rounded-full bg-slate-700 hover:bg-slate-500 transition-all duration-300";
+                    extraBeritaContainer.classList.add('hidden');
+                    if(btnText) btnText.textContent = 'LIHAT SEMUA BERITA';
+                    // Reset kelas active agar bisa beranimasi lagi jika dibuka
+                    const hideReveals = extraBeritaContainer.querySelectorAll('.reveal-up');
+                    hideReveals.forEach(el => el.classList.remove('active'));
                 }
             });
-
-            if (counterElement) {
-                counterElement.textContent = `0${currentSlideIndex + 1}`;
-            }
         }
 
-        dots.forEach((dot, idx) => {
-            dot.addEventListener('click', () => {
-                currentSlideIndex = idx;
-                updateSlider();
+        // ==========================================
+        // LOGIKA BARU: ANIMASI WIPE UP (INTERSECTION OBSERVER)
+        // ==========================================
+        const revealElements = document.querySelectorAll('.reveal-up');
+        
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Tambahkan kelas active saat elemen terlihat di layar
+                    entry.target.classList.add('active');
+                    // Berhenti memantau elemen ini agar animasi tidak berulang terus
+                    observer.unobserve(entry.target); 
+                }
             });
+        }, {
+            root: null,
+            threshold: 0.1, // Berjalan saat 10% dari elemen sudah muncul
+            rootMargin: "0px 0px -40px 0px" // Sedikit menunda trigger sebelum elemen benar-benar masuk layar
         });
 
-        document.getElementById('nextSlide')?.addEventListener('click', () => {
-            if (slides.length > 0) {
-                currentSlideIndex = (currentSlideIndex + 1) % slides.length;
-                updateSlider();
-            }
-        });
-
-        document.getElementById('prevSlide')?.addEventListener('click', () => {
-            if (slides.length > 0) {
-                currentSlideIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
-                updateSlider();
-            }
-        });
-
-        if (slides.length > 1) {
-            setInterval(() => {
-                currentSlideIndex = (currentSlideIndex + 1) % slides.length;
-                updateSlider();
-            }, 6000);
-        }
+        // Terapkan observer ke seluruh elemen yang memiliki class .reveal-up
+        revealElements.forEach(el => revealObserver.observe(el));
     </script>
 </body>
 </html>
